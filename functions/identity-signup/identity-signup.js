@@ -24,25 +24,29 @@ exports.handler = async function(event, context) {
     }
   };
 
+  const responseBodyString = JSON.stringify({
+    query: `
+    mutation insertUser($id: String, $email:String, $name:String){
+      insert_users(objects: {id: $id, email: $email, name: $name}) {
+        affected_rows
+      }
+    }    
+  `,
+  variables: {
+    id: user.id,
+    email: user.email,
+    name: user.user_metadata.full_name
+  }
+  });
+
+  console.log(responseBodyString)
+
   const response = await axios.post({
     url: 'https://netlify-stream.herokuapp.com/v1/graphql',
     headers: {
       ["x-hasura-admin-secret"]: process.env.HASURA_SECRET
     },
-    body: JSON.stringify({
-      query: `
-      mutation insertUser($id: String, $email:String, $name:String){
-        insert_users(objects: {id: $id, email: $email, name: $name}) {
-          affected_rows
-        }
-      }    
-    `,
-    variables: {
-      id: user.id,
-      email: user.email,
-      name: user.user_metadata.full_name
-    }
-    })
+    body: responseBodyString
   })
 
   return {
