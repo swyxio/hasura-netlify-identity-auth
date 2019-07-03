@@ -41,8 +41,7 @@ exports.handler = async function(event, context) {
 
   console.log(responseBodyString)
 
-  const response = await axios.post({
-    url: 'https://netlify-stream.herokuapp.com/v1/graphql',
+  const response = await axios.post('https://netlify-stream.herokuapp.com/v1/graphql',{
     headers: {
       ["x-hasura-admin-secret"]: process.env.HASURA_SECRET
     },
